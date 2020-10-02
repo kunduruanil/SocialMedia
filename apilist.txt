@@ -1,0 +1,31 @@
+API 
+
+inserting :
+1. login - set data to mongo - return user_id,user_name.
+2. streem_config - ui - post api -return config_id  set data to mongo.
+3. update exitting config - config_id
+4. 
+
+
+
+get :
+
+1. list of configs
+2. get record count group by source : serach_keywords  : total number of doc 
+3. get count of group by sentiment : {pos:count,neg:count,}
+4. 
+
+
+
+
+Mongo collection names:
+
+app_users: 
+
+streem_config
+
+user_timeline  - 30 days clear - 1/4 gb
+
+serach_keywords - 30 days clear - 2 gb
+
+
