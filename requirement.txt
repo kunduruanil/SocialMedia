@@ -1,0 +1,10 @@
+
+
+# twitter
+pip install tweepy
+pip install twitter-nlp-toolkit
+pip install tweet-preprocessor
+# ml - nlp
+pip install afinn
+pip install textblob
+pip install vaderSentiment
