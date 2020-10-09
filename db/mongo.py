@@ -5,9 +5,10 @@
 
 
 from pymongo import MongoClient
-from config.configs import get_db_congigs
+import gridfs
+import configration.constants as config
 
-port_number,host = get_db_congigs()
+port_number,host = config.get_db_configs()
 
 
 client = MongoClient(host=host, port=port_number)

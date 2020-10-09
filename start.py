@@ -4,7 +4,7 @@
 """
 
 from flask import Flask,request,jsonify
-from app_route.all_apis import create_user
+from app_route.all_apis import create_user,create_config
 import ast
 
 # Flask constructor takes the name of
@@ -28,7 +28,7 @@ def login_user():
                 data = request.data
                 data = ast.literal_eval(data.decode("UTF-8"))
             id = create_user(data=data)
-            return jsonify(id)
+            return jsonify({"code":200,"value":id})
         else:
             return jsonify({"code":400,"msg":"Bad request"})
     except Exception as e:
@@ -36,6 +36,22 @@ def login_user():
         return jsonify({"code":500,"msg":"Internal Server Error"})
 
 
+@app.route('/createconfig', methods = ['POST'])
+def create_user_config():
+    try:
+        if request.method == 'POST':
+            if request.is_json:
+                data = request.get_json()
+            else:
+                data = request.data
+                data = ast.literal_eval(data.decode("UTF-8"))
+            id = create_config(data=data)
+            return jsonify(id)
+        else:
+            return jsonify({"code":400,"msg":"Bad request"})
+    except Exception as e:
+        print(str(e))
+        return jsonify({"code":500,"msg":"Internal Server Error"})
 
 # main driver function
 if __name__ == '__main__':

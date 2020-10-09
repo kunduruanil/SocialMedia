@@ -5,7 +5,7 @@
 
 env = "dev"
 
-def get_db_congigs():
+def get_db_configs():
     if env=="dev":
         port_number = 27017
         host = "127.0.0.1"

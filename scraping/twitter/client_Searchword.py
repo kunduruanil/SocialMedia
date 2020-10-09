@@ -21,6 +21,8 @@ from afinn import Afinn
 from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
+from app_route.all_apis import add_dataframe
+import configration.constants as config
 
 def get_twitter_auth():
     print('get_twitter_auth')
@@ -66,10 +68,13 @@ def get_tweets_search_list(searchlist):
             # Creation of dataframe from tweets list
             # Add or remove columns as you remove tweet information
             tweets_df = pd.DataFrame(tweets_list)
-            tweets_df.columns = ['ID', 'Created_At', 'Source', 'Original_Text', 'Is_Retweeted', 'Retweet_count',
+            col = ['ID', 'Created_At', 'Source', 'Original_Text', 'Is_Retweeted', 'Retweet_count',
                                  'Like_count']
+            tweets_df.columns = col
             tweets_df['Clean_Text'] = tweets_df['Original_Text'].apply(p.clean)
+            tweets_df["Created_At"] = pd.to_datetime(tweets_df["Created_At"])
             return tweets_df
+
         # TBD - write a code to dump json file into DB........
         ## Twitter has limit of 3200 tweets, chk for duplicate before inserting into DB
         except KeyError:
@@ -140,12 +145,12 @@ def sentiment_analysis(df):
         lambda x: 'Positive' if x > .05 else ('Neutral' if x < .05 and x > -0.05 else 'Negative'))
 
     df['Sentiment'] = df.apply(Final_Sentiment, axis=1)
-    return df
+    ## mongo db added data
+    obj = add_dataframe(df=df, collection_name=config.serach_keywords)
+    return obj
 
 if __name__ == '__main__':
     tweet_df = get_tweets_search_list(['ndtv'])
     print(tweet_df.head())
     print(tweet_df.shape)
     final_df = sentiment_analysis(tweet_df)
-    print(final_df.head())
-    print(final_df.shape)
