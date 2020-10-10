@@ -152,26 +152,41 @@ def sentiment_analysis(df):
     #data = df["Sentiment"].value_counts().to_dict()
     return df
 
-def tweets_search_insert(searchlist):
+def get_hourly_stats(df):
+    """
+
+    :param df:
+    :return:
+    """
+    df = df[["Created_At", "Sentiment"]]
+    df.loc[:,"Created_At"] = pd.to_datetime(df.loc[:,"Created_At"])
+    df.loc[:,"Created_At"] = df.loc[:,"Created_At"].dt.round("H")
+    hourly = pd.DataFrame({"count": df.groupby(["Created_At", "Sentiment"]).size()}).reset_index(level=[1])
+    hourly_count = dict()
+    for i in hourly.index.unique():
+        hourly_count[i.isoformat()] = dict(zip(hourly.loc[i, "Sentiment"].tolist(), hourly.loc[i, "count"].tolist()))
+    return hourly_count
+
+def tweets_search_insert(searchlist,user_id):
     """
 
     :param searchlist:
     :return:
     """
     tweet_df = get_tweets_search_list(searchlist)
-    data = sentiment_analysis(tweet_df)
-    s = pd.Series(np.ones((tweet_df.shape[0],)), index=tweet_df["Created_At"])
-    temp = s.resample('H').sum()
-    temp.index = [i.isoformat() for i in temp.index]
-    data["hourly_data"] = temp.to_dict()
-    data["count"] = tweet_df.shape[0]
+    df = sentiment_analysis(tweet_df)
+    data = dict()
+    data["user_id"] = user_id
+    data["hourly_stats"] = get_hourly_stats(df)
+    data["totalcount"] = tweet_df.shape[0]
+    data["source"] = "twitter"
     data["searchlist"] = searchlist
     obj = insert_search_keyword_sentiment(data=data, collection=config.serach_keywords)
-    return obj
+    return str(obj)
 
 if __name__ == '__main__':
     searchlist = ["data science"]
-    # print(tweets_search_insert(["data science"]))
-    tweet_df = get_tweets_search_list(searchlist)
-    df = sentiment_analysis(tweet_df)
-    df.to_csv("datascience.csv")
+    print(tweets_search_insert(searchlist,"5f81659619b72d9082c6ea4e"))
+    # tweet_df = get_tweets_search_list(searchlist)
+    # df = sentiment_analysis(tweet_df)
+    # df.to_csv("datascience.csv")

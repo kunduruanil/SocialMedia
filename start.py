@@ -4,7 +4,7 @@
 """
 
 from flask import Flask,request,jsonify
-from app_route.all_apis import create_user,create_config,get_all_cofig_by_userid
+from app_route.all_apis import create_user,create_config,get_all_cofig_by_userid,check_user_login,update_config
 import ast
 from bson import json_util
 
@@ -54,6 +54,24 @@ def create_user_config():
         print(str(e))
         return jsonify({"code":500,"msg":"Internal Server Error"})
 
+@app.route('/updateconfig', methods = ['POST'])
+def update_user_config():
+    try:
+        if request.method == 'POST':
+            if request.is_json:
+                data = request.get_json()
+            else:
+                data = request.data
+                data = ast.literal_eval(data.decode("UTF-8"))
+            id = update_config(data=data)
+            return jsonify({"code":200,"value":id})
+        else:
+            return jsonify({"code":400,"msg":"Bad request"})
+    except Exception as e:
+        print(str(e))
+        return jsonify({"code":500,"msg":"Internal Server Error"})
+
+
 @app.route('/listcofigs', methods = ['POST'])
 def list_all_cofigs():
     try:
@@ -72,8 +90,8 @@ def list_all_cofigs():
         print(str(e))
         return jsonify({"code":500,"msg":"Internal Server Error"})
 
-@app.route('/listcofigs', methods = ['POST'])
-def list_all_cofigs():
+@app.route('/checklogin', methods = ['POST'])
+def user_validation():
     try:
         if request.method == 'POST':
             if request.is_json:
@@ -81,9 +99,8 @@ def list_all_cofigs():
             else:
                 data = request.data
                 data = ast.literal_eval(data.decode("UTF-8"))
-            list_all = get_all_cofig_by_userid(query=data)
-            # print(list_all)
-            return jsonify(json_util.dumps({"code":200,"value":list_all}))
+            user = check_user_login(query=data)
+            return jsonify(json_util.dumps({"code":200,"value":user}))
         else:
             return jsonify({"code":400,"msg":"Bad request"})
     except Exception as e:

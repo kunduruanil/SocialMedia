@@ -4,7 +4,7 @@ inserting :
 1. login - set data to mongo - return user_id,user_name.
 2. check_login - 
 3. streem_config - ui - post api -return config_id  set data to mongo.
-4. update exitting config - config_id
+4. update exitting config - config_id 
 5. 
 
 
