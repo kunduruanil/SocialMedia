@@ -38,7 +38,10 @@ def insert_one(db,collection,record):
 def insert_many(db,collection,records):
     return db[collection].insert_many(records)
 
+def find(db,collection,query):
+    return db[collection].find(query)
 
+#print(list(find(db=get_db(db_name=config.db),collection=config.streem_config,query={"user_id":"5f7c88d305dd5ed504a5e0d3"})))
 # print(count())
 # print(insert_one())
 # print(insert_many())

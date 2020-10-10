@@ -9,6 +9,7 @@ import json
 import datetime
 from datetime import date
 import pandas as pd
+import numpy as np
 import preprocessor as p
 
 from tweepy import API
@@ -16,6 +17,7 @@ from tweepy import OAuthHandler
 from twitter_nlp_toolkit.twitter_listener import twitter_listener
 from tweepy import Cursor
 from scraping.twitter.client_usertimeline import get_twitter_client
+from app_route.all_apis import insert_search_keyword_sentiment
 
 from afinn import Afinn
 from textblob import TextBlob
@@ -146,11 +148,30 @@ def sentiment_analysis(df):
 
     df['Sentiment'] = df.apply(Final_Sentiment, axis=1)
     ## mongo db added data
-    obj = add_dataframe(df=df, collection_name=config.serach_keywords)
+    #obj = add_dataframe(df=df, collection_name=config.serach_keywords)
+    #data = df["Sentiment"].value_counts().to_dict()
+    return df
+
+def tweets_search_insert(searchlist):
+    """
+
+    :param searchlist:
+    :return:
+    """
+    tweet_df = get_tweets_search_list(searchlist)
+    data = sentiment_analysis(tweet_df)
+    s = pd.Series(np.ones((tweet_df.shape[0],)), index=tweet_df["Created_At"])
+    temp = s.resample('H').sum()
+    temp.index = [i.isoformat() for i in temp.index]
+    data["hourly_data"] = temp.to_dict()
+    data["count"] = tweet_df.shape[0]
+    data["searchlist"] = searchlist
+    obj = insert_search_keyword_sentiment(data=data, collection=config.serach_keywords)
     return obj
 
 if __name__ == '__main__':
-    tweet_df = get_tweets_search_list(['ndtv'])
-    print(tweet_df.head())
-    print(tweet_df.shape)
-    final_df = sentiment_analysis(tweet_df)
+    searchlist = ["data science"]
+    # print(tweets_search_insert(["data science"]))
+    tweet_df = get_tweets_search_list(searchlist)
+    df = sentiment_analysis(tweet_df)
+    df.to_csv("datascience.csv")

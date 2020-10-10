@@ -4,8 +4,9 @@
 """
 
 from flask import Flask,request,jsonify
-from app_route.all_apis import create_user,create_config
+from app_route.all_apis import create_user,create_config,get_all_cofig_by_userid
 import ast
+from bson import json_util
 
 # Flask constructor takes the name of
 # current module (__name__) as argument.
@@ -46,12 +47,50 @@ def create_user_config():
                 data = request.data
                 data = ast.literal_eval(data.decode("UTF-8"))
             id = create_config(data=data)
-            return jsonify(id)
+            return jsonify({"code":200,"value":id})
         else:
             return jsonify({"code":400,"msg":"Bad request"})
     except Exception as e:
         print(str(e))
         return jsonify({"code":500,"msg":"Internal Server Error"})
+
+@app.route('/listcofigs', methods = ['POST'])
+def list_all_cofigs():
+    try:
+        if request.method == 'POST':
+            if request.is_json:
+                data = request.get_json()
+            else:
+                data = request.data
+                data = ast.literal_eval(data.decode("UTF-8"))
+            list_all = get_all_cofig_by_userid(query=data)
+            # print(list_all)
+            return jsonify(json_util.dumps({"code":200,"value":list_all}))
+        else:
+            return jsonify({"code":400,"msg":"Bad request"})
+    except Exception as e:
+        print(str(e))
+        return jsonify({"code":500,"msg":"Internal Server Error"})
+
+@app.route('/listcofigs', methods = ['POST'])
+def list_all_cofigs():
+    try:
+        if request.method == 'POST':
+            if request.is_json:
+                data = request.get_json()
+            else:
+                data = request.data
+                data = ast.literal_eval(data.decode("UTF-8"))
+            list_all = get_all_cofig_by_userid(query=data)
+            # print(list_all)
+            return jsonify(json_util.dumps({"code":200,"value":list_all}))
+        else:
+            return jsonify({"code":400,"msg":"Bad request"})
+    except Exception as e:
+        print(str(e))
+        return jsonify({"code":500,"msg":"Internal Server Error"})
+
+
 
 # main driver function
 if __name__ == '__main__':
