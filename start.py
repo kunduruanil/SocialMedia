@@ -4,7 +4,7 @@
 """
 
 from flask import Flask,request,jsonify
-from app_route.all_apis import create_user,create_config,get_all_cofig_by_userid,check_user_login,update_config
+from app_route.all_apis import *
 import ast
 from bson import json_util
 
@@ -108,6 +108,39 @@ def user_validation():
         return jsonify({"code":500,"msg":"Internal Server Error"})
 
 
+@app.route('/getrecordcountskw', methods = ['POST'])
+def record_count_search_keyword():
+    try:
+        if request.method == 'POST':
+            if request.is_json:
+                data = request.get_json()
+            else:
+                data = request.data
+                data = ast.literal_eval(data.decode("UTF-8"))
+            count = get_search_keyword_count(query=data)
+            return jsonify(json_util.dumps({"code":200,"value":count}))
+        else:
+            return jsonify({"code":400,"msg":"Bad request"})
+    except Exception as e:
+        print(str(e))
+        return jsonify({"code":500,"msg":"Internal Server Error"})
+
+@app.route('/getcountsofgroupsskw', methods = ['POST'])
+def counts_of_groups_search_keyword():
+    try:
+        if request.method == 'POST':
+            if request.is_json:
+                data = request.get_json()
+            else:
+                data = request.data
+                data = ast.literal_eval(data.decode("UTF-8"))
+            stats = get_counts_of_groups_search_keyword(query=data)
+            return jsonify(json_util.dumps({"code":200,"value":stats}))
+        else:
+            return jsonify({"code":400,"msg":"Bad request"})
+    except Exception as e:
+        print(str(e))
+        return jsonify({"code":500,"msg":"Internal Server Error"})
 
 # main driver function
 if __name__ == '__main__':

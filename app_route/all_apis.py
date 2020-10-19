@@ -88,10 +88,36 @@ def check_user_login(query):
     else:
         return False
 
+def get_search_keyword_count(query):
+    """
+
+    :param query:
+    :return:
+    """
+    list_search_keywords_by_user = find(db=db, collection=config.serach_keywords, query=dict(query))
+    count = 0
+    for d in  list(list_search_keywords_by_user):
+        count+=d["totalcount"]
+    return count
+
+def get_counts_of_groups_search_keyword(query):
+    """
+
+    :param query:
+    :return:
+    """
+    list_search_keywords_by_user = find(db=db, collection=config.serach_keywords, query=dict(query))
+    stats = []
+    for d in list(list_search_keywords_by_user):
+        stats.append(d["hourly_stats"])
+    return stats
+
 if __name__ == '__main__':
-    data = {"config_id":"5f816d9facc009815c4dbcec","source":"twitter","frequency":"Daily",
-            "list_of_search_words":["data science"],"list_of_users":["kunduruanil"]}
-    result = update_config(data)
-    print(result)
-    print(type(result))
-    print(result.matched_count > 0)
+    query = {"user_id":"5f81659619b72d9082c6ea4e"}
+    print(get_counts_of_groups_search_keyword(query=query))
+    # data = {"config_id":"5f816d9facc009815c4dbcec","source":"twitter","frequency":"Daily",
+    #         "list_of_search_words":["data science"],"list_of_users":["kunduruanil"]}
+    # result = update_config(data)
+    # print(result)
+    # print(type(result))
+    # print(result.matched_count > 0)
