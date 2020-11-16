@@ -1,0 +1,12 @@
+{
+    "_id" : ObjectId("5f8dadd82d733b36079b7982"),
+    "user_id" : "5f81659619b72d9082c6ea4e",
+    "source" : "twitter",
+    "frequency" : "Daily",
+    "list_of_search_words" : [ 
+        "data science"
+    ],
+    "list_of_users" : [ 
+        "kunduruanil"
+    ]
+}

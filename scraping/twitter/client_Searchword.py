@@ -185,7 +185,7 @@ def tweets_search_insert(searchlist,user_id):
     return str(obj)
 
 if __name__ == '__main__':
-    searchlist = ["data science"]
+    searchlist = ["AI"]
     print(tweets_search_insert(searchlist,"5f81659619b72d9082c6ea4e"))
     # tweet_df = get_tweets_search_list(searchlist)
     # df = sentiment_analysis(tweet_df)

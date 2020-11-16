@@ -1,0 +1,16 @@
+{
+    "_id" : ObjectId("5f816723401d6d6fa4502561"),
+    "user_id" : "5f81659619b72d9082c6ea4e",
+    "hourly_stats" : {
+        "2020-10-10T00:00:00" : {
+            "Negative" : 4,
+            "Neutral" : 10,
+            "Positive" : 6
+        }
+    },
+    "totalcount" : 20,
+    "source" : "twitter",
+    "searchlist" : [ 
+        "data science"
+    ]
+}
